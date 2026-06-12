@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Conferência NFS-e — SIAFI v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<style>
+:root{
+  --navy:#0c2a54;--navy-mid:#12336b;--navy-light:#1a4080;--navy-pale:#e8eef7;--navy-ultra:#f0f5fb;
+  --accent:#1d4ed8;--accent-s:#dbeafe;--gold:#b8862e;--gold-s:#fef3c7;--white:#ffffff;
+  --g50:#f8fafc;--g100:#f1f5f9;--g200:#e2e8f0;--g300:#cbd5e1;--g400:#94a3b8;--g500:#64748b;
+  --g700:#334155;--g800:#1e293b;--green:#15803d;--green-s:#dcfce7;--red:#b91c1c;--red-s:#fee2e2;
+  --amber:#92400e;--amber-s:#fef3c7;--amber-b:#f59e0b;
+  --sh-sm:0 1px 3px rgba(12,42,84,.08),0 2px 8px rgba(12,42,84,.06);
+  --sh-md:0 4px 16px rgba(12,42,84,.10),0 2px 6px rgba(12,42,84,.06);
+  --sh-lg:0 8px 32px rgba(12,42,84,.14),0 2px 8px rgba(12,42,84,.07);
+  --r:12px;--r-sm:8px;
+  --bg-body:#edf2f9;
+}
+
+[data-theme="dark"]{
+  --navy:#1e3a5f;--navy-mid:#254a75;--navy-light:#2d5a8a;--navy-pale:#1a2744;--navy-ultra:#152238;
+  --accent:#3b82f6;--accent-s:#1e3a5f;--gold:#d4a843;--gold-s:#3d3418;--white:#0f172a;
+  --g50:#1e293b;--g100:#1a2535;--g200:#334155;--g300:#475569;--g400:#64748b;--g500:#94a3b8;
+  --g700:#cbd5e1;--g800:#f1f5f9;--green:#22c55e;--green-s:#14532d;--red:#ef4444;--red-s:#450a0a;
+  --amber:#fbbf24;--amber-s:#451a03;--amber-b:#f59e0b;
+  --sh-sm:0 1px 3px rgba(0,0,0,.3),0 2px 8px rgba(0,0,0,.2);
+  --sh-md:0 4px 16px rgba(0,0,0,.4),0 2px 6px rgba(0,0,0,.3);
+  --sh-lg:0 8px 32px rgba(0,0,0,.5),0 2px 8px rgba(0,0,0,.4);
+  --bg-body:#0f172a;
+}
+
+[data-theme="dark"] body{background:var(--bg-body)}
+[data-theme="dark"] .sidebar{background:#1e293b}
+[data-theme="dark"] .sum-card,[data-theme="dark"] .fed-card,[data-theme="dark"] .table-card,[data-theme="dark"] .history-panel{background:#1e293b}
+[data-theme="dark"] .table-head-bar{background:#1a2535;border-color:var(--g200)}
+[data-theme="dark"] thead th{background:#1a2535;border-color:var(--g200);color:var(--g400)}
+[data-theme="dark"] tbody tr{border-color:#334155}
+[data-theme="dark"] tbody tr:hover{background:#253449}
+[data-theme="dark"] .empty-state{color:var(--g400)}
+[data-theme="dark"] input,[data-theme="dark"] select{background:#1e293b;border-color:var(--g300);color:var(--g800)}
+[data-theme="dark"] select option{background:#1e293b;color:var(--g800)}
+[data-theme="dark"] select optgroup{background:#1e293b;color:var(--g800)}
+[data-theme="dark"] input:focus,[data-theme="dark"] select:focus{background:#1e293b}
+[data-theme="dark"] .valor-editavel{background:#1e293b;color:var(--g800)}
+[data-theme="dark"] .valor-editavel:focus{background:#1e293b}
+[data-theme="dark"] .modal-box{background:#1e293b}
+[data-theme="dark"] .modal-input{background:#1e293b;border-color:var(--g300);color:var(--g800)}
+[data-theme="dark"] .obs-box{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.3);color:#93c5fd}
+[data-theme="dark"] .subtotal-box{background:#14532d;border-color:#166534}
+[data-theme="dark"] .subtotal-box strong{color:#4ade80}
+[data-theme="dark"] .check-counter-pill.completo{background:#14532d;border-color:#22c55e}
+[data-theme="dark"] .check-counter-pill.parcial{background:#451a03}
+[data-theme="dark"] .badge-ajuste{background:rgba(251,191,36,.2);color:#fbbf24}
+[data-theme="dark"] .btn-desfazer{color:#fbbf24}
+[data-theme="dark"] .linha-ajustada{background:rgba(251,191,36,.1)!important}
+[data-theme="dark"] .campo-erro{background:rgba(239,68,68,.1)!important}
+[data-theme="dark"] .campo-erro-msg{color:#ef4444}
+[data-theme="dark"] .conta-warn{background:rgba(239,68,68,.1);color:#ef4444}
+[data-theme="dark"] .total-pill{background:var(--navy-pale);color:var(--navy)}
+[data-theme="dark"] .fed-card.ativo{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%)}
+[data-theme="dark"] .badge-tributo.t-ISS{background:rgba(139,92,246,.2);color:#c4b5fd}
+[data-theme="dark"] .badge-tributo.t-INSS{background:rgba(59,130,246,.2);color:#93c5fd}
+[data-theme="dark"] .badge-tributo.t-IR{background:rgba(251,191,36,.2);color:#fbbf24}
+[data-theme="dark"] .badge-tributo.t-PIS{background:rgba(34,197,94,.2);color:#4ade80}
+[data-theme="dark"] .badge-tributo.t-COFINS{background:rgba(34,197,94,.2);color:#4ade80}
+[data-theme="dark"] .badge-tributo.t-CSLL{background:rgba(34,197,94,.2);color:#4ade80}
+[data-theme="dark"] .valor-destaque{border-color:rgba(59,130,246,.5);background:rgba(59,130,246,.15);color:#60a5fa}
+[data-theme="dark"] .history-item{border-color:#334155}
+[data-theme="dark"] .history-item:hover{background:#253449}
+[data-theme="dark"] .toast{background:var(--navy)}
+[data-theme="dark"] .toast.success{background:#15803d}
+[data-theme="dark"] .toast.error{background:#991b1b}
+[data-theme="dark"] .toast.warning{background:#92400e}
+[data-theme="dark"] .sum-card.c-erro .sum-value{color:#ef4444!important}
+[data-theme="dark"] .sum-card.c-erro .sum-label{color:#ef4444}
+[data-theme="dark"] .sum-card.c-erro{border-top-color:#ef4444!important}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'IBM Plex Sans',sans-serif;background:#edf2f9;color:var(--g800);min-height:100vh}
+
+.topbar{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%);padding:0 36px;height:62px;display:flex;align-items:center;justify-content:space-between;border-bottom:3px solid var(--gold);box-shadow:0 4px 20px rgba(12,42,84,.3)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:34px;height:34px;background:var(--gold);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;flex-shrink:0}
+.brand-name{color:#fff;font-size:15px;font-weight:600;letter-spacing:.01em}
+.brand-name small{display:block;font-size:11px;font-weight:300;opacity:.6;margin-top:1px;letter-spacing:.04em}
+.topbar-pill{font-size:11px;color:rgba(255,255,255,.5);font-family:'IBM Plex Mono',monospace;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);padding:4px 12px;border-radius:20px}
+
+.page-head{background:linear-gradient(135deg,var(--navy-mid),var(--navy));padding:26px 36px 28px;color:#fff}
+.breadcrumb{font-size:12px;color:rgba(255,255,255,.45);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.page-head h1{font-size:20px;font-weight:700;letter-spacing:-.01em;margin-bottom:5px;display:flex;align-items:center;gap:10px}
+.page-head h1 i{font-size:18px;opacity:.8}
+.page-head p{font-size:13px;font-weight:300;opacity:.7}
+
+.page-body{max-width:1380px;margin:0 auto;padding:26px 30px 52px;display:grid;grid-template-columns:350px 1fr;gap:22px;align-items:start}
+
+.sidebar{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-lg);overflow:hidden;position:sticky;top:22px}
+.sidebar-head{background:var(--navy);padding:14px 20px;color:#fff;display:flex;align-items:center;gap:10px}
+.sidebar-head i{opacity:.8}
+.sidebar-head h2{font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.1em}
+.sidebar-body{padding:18px 20px 22px}
+
+.sep{height:1px;background:var(--g200);margin:14px 0}
+.sep-label{display:flex;align-items:center;gap:8px;margin:14px 0 8px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--g400)}
+.sep-label::before,.sep-label::after{content:'';flex:1;height:1px;background:var(--g200)}
+
+label{display:block;font-size:12px;font-weight:600;color:var(--g500);text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px}
+input,select{width:100%;padding:10px 12px;border:1.5px solid var(--g200);border-radius:var(--r-sm);font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:500;color:var(--g800);background:var(--g50);margin-bottom:12px;transition:border-color .18s,box-shadow .18s,background .18s;appearance:none;-webkit-appearance:none}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='7' viewBox='0 0 11 7'%3E%3Cpath d='M1 1l4.5 4.5L10 1' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;cursor:pointer}
+select option{background:#fff}
+input:focus,select:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(29,78,216,.09)}
+input:hover,select:hover{border-color:var(--navy-light)}
+.helper{font-size:11px;color:var(--g400);margin-top:-8px;margin-bottom:10px;padding-left:2px}
+
+.obs-box{background:var(--accent-s);border:1px solid #bfdbfe;border-left:3px solid var(--accent);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;color:#1e40af;line-height:1.65;margin-top:6px}
+.obs-box strong{font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:3px;font-size:12px}
+
+.btn-calc,.btn-reset,.btn-history{width:100%;padding:12px;margin-top:12px;border:none;border-radius:var(--r-sm);font-family:'IBM Plex Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .2s,transform .15s,box-shadow .2s;box-shadow:var(--sh-md);display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-calc{background:var(--navy);color:#fff}
+.btn-calc:hover{background:var(--navy-light);transform:translateY(-1px);box-shadow:var(--sh-lg)}
+.btn-reset{background:var(--g300);color:var(--g800)}
+.btn-reset:hover{background:var(--g400);color:#fff}
+.btn-history{background:var(--gold);color:#fff;margin-top:8px}
+.btn-history:hover{background:#a06e20}
+
+.right{display:flex;flex-direction:column;gap:18px}
+
+.sum-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.sum-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-md);padding:18px 20px;border-top:4px solid transparent;position:relative;overflow:hidden;transition:box-shadow .2s,transform .2s}
+.sum-card:hover{transform:translateY(-2px);box-shadow:var(--sh-lg)}
+.sum-card.c-ret{border-top-color:var(--red)}
+.sum-card.c-liq{border-top-color:var(--accent)}
+.sum-card.c-cre{border-top-color:var(--green)}
+.sum-card.c-cre.conferida{border-color:var(--green)!important;box-shadow:0 0 0 2px var(--green-s),var(--sh-lg)}
+.sum-card.c-cre.conferida::after{content:'✔ Nota conferida';position:absolute;top:12px;right:14px;font-size:10px;font-weight:600;color:var(--green);background:var(--green-s);border:1px solid rgba(21,128,61,.3);padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+[data-theme="dark"] .sum-card.c-cre.conferida::after{background:rgba(34,197,94,.2);border-color:rgba(34,197,94,.4);color:#4ade80}
+[data-theme="dark"] .sum-card.c-cre.conferida{border-color:var(--green)!important;box-shadow:0 0 0 2px rgba(34,197,94,.3),var(--sh-lg)}
+.sum-card.c-erro{border-top-color:#dc2626!important}
+.sum-card.c-erro .sum-value{color:#dc2626!important}
+.sum-card.c-erro .sum-label{color:#dc2626}
+.conta-warn{font-size:11px;font-weight:600;color:#b91c1c;margin-top:6px;padding:6px 10px;background:rgba(220,38,38,.08);border-radius:6px;border-left:3px solid #dc2626;display:none}
+.conta-warn.visivel{display:block}
+.sum-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.sum-value{font-family:'IBM Plex Mono',monospace;font-size:22px;font-weight:500;line-height:1}
+.sum-card.c-ret .sum-value{color:var(--red)}
+.sum-card.c-liq .sum-value{color:var(--accent)}
+.sum-card.c-cre .sum-value{color:var(--green)}
+.sum-bg{position:absolute;right:16px;bottom:10px;font-size:42px;opacity:.08;pointer-events:none;color:currentColor}
+
+.fed-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fed-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-md);padding:20px 22px;border:2px solid transparent;transition:all .25s;position:relative;overflow:hidden}
+.fed-card.ativo{border-color:var(--navy);background:linear-gradient(135deg,var(--navy) 0%,var(--navy-mid) 60%,var(--navy-light) 100%);box-shadow:0 6px 24px rgba(12,42,84,.28),0 2px 8px rgba(12,42,84,.14)}
+.fed-card.ativo .fed-label{color:rgba(255,255,255,.6)}
+.fed-card.ativo .fed-value{color:#fff}
+.fed-card.ativo .fed-desc{color:rgba(255,255,255,.5)}
+.fed-card.ativo::after{content:'✔ Regime ativo';position:absolute;top:12px;right:14px;font-size:10px;font-weight:600;color:#fff;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);padding:3px 9px;border-radius:20px;letter-spacing:.04em}
+.fed-card.inativo{opacity:.55;filter:grayscale(.35)}
+.fed-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.1em;color:var(--g400);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.fed-value{font-family:'IBM Plex Mono',monospace;font-size:26px;font-weight:500;color:var(--navy);margin-bottom:6px}
+.fed-desc{font-size:12px;color:var(--g400);line-height:1.7;font-family:'IBM Plex Mono',monospace}
+
+.table-card{background:var(--white);border-radius:var(--r);box-shadow:var(--sh-md);overflow:hidden}
+.table-head-bar{padding:14px 22px;border-bottom:1px solid var(--g200);background:var(--g50);display:flex;align-items:center;justify-content:space-between}
+.table-head-title{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--navy);display:flex;align-items:center;gap:8px}
+.table-head-title i{opacity:.7}
+.table-head-title::before{content:'';width:3px;height:14px;background:var(--navy);border-radius:2px;display:inline-block}
+.total-pill{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;background:var(--navy-pale);color:var(--navy);padding:4px 12px;border-radius:20px}
+
+table{width:100%;border-collapse:collapse}
+thead th{padding:10px 18px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--g400);background:var(--g50);border-bottom:1px solid var(--g200);white-space:nowrap}
+thead th:nth-child(4),thead th:nth-child(5){text-align:center}
+tbody tr{border-bottom:1px solid var(--g100);transition:background .12s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--g50)}
+tbody tr.linha-ajustada{background:rgba(254,240,138,.22)!important}
+tbody td{padding:11px 18px;font-size:13px;vertical-align:middle}
+
+.td-nome{display:inline-flex;align-items:center;gap:6px}
+.badge-tributo{display:inline-flex;align-items:center;padding:3px 9px;border-radius:6px;font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500}
+.t-ISS{background:#ede9fe;color:#6d28d9}
+.t-INSS{background:#dbeafe;color:#1d4ed8}
+.t-IR{background:#fef3c7;color:#92400e}
+.t-PIS{background:#dcfce7;color:#15803d}
+.t-COFINS{background:#d1fae5;color:#065f46}
+.t-CSLL{background:#d1fae5;color:#065f46}
+
+.badge-ajuste{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;background:rgba(245,158,11,.18);color:#92400e;font-size:10px;font-weight:700;letter-spacing:.04em;margin-left:6px;vertical-align:middle}
+.btn-desfazer{background:none;border:none;cursor:pointer;padding:0 0 0 4px;color:#92400e;font-size:13px;line-height:1;vertical-align:middle;opacity:.7;transition:opacity .15s}
+.btn-desfazer:hover{opacity:1}
+.btn-del-hist{background:none;border:none;cursor:pointer;padding:4px 6px;color:#94a3b8;border-radius:6px;transition:color .15s,background .15s;line-height:1}
+.btn-del-hist:hover{color:#dc2626;background:rgba(220,38,38,.08)}
+
+.modal-overlay{position:fixed;inset:0;background:rgba(12,42,84,.45);display:flex;align-items:center;justify-content:center;z-index:1000;opacity:0;pointer-events:none;transition:opacity .18s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal-box{background:#fff;border-radius:14px;box-shadow:0 20px 60px rgba(12,42,84,.22);padding:28px 28px 22px;width:360px;max-width:92vw;transform:translateY(12px);transition:transform .18s}
+.modal-overlay.show .modal-box{transform:translateY(0)}
+.modal-box h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.modal-box p{font-size:12px;color:var(--g500);margin-bottom:16px}
+.modal-input{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--g300);font-size:13px;font-family:'IBM Plex Sans',sans-serif;color:var(--g800);outline:none;transition:border-color .15s}
+.modal-input:focus{border-color:var(--accent)}
+.modal-actions{display:flex;gap:10px;margin-top:16px;justify-content:flex-end}
+.modal-btn{padding:8px 18px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:opacity .15s}
+.modal-btn-cancel{background:var(--g100);color:var(--g700)}
+.modal-btn-cancel:hover{background:var(--g200)}
+.modal-btn-save{background:var(--navy);color:#fff}
+.modal-btn-save:hover{opacity:.88}
+.campo-erro{border-color:#dc2626!important;background:rgba(220,38,38,.05)!important}
+.campo-erro-msg{font-size:11px;font-weight:600;color:#dc2626;margin-top:5px;display:none}
+.campo-erro-msg.visivel{display:block}
+
+.badge-ajuste-card{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;background:rgba(245,158,11,.30);border:1px solid rgba(245,158,11,.60);color:#fde68a;font-size:11px;font-weight:700;letter-spacing:.05em;margin-left:10px;vertical-align:middle;line-height:1}
+
+.fed-darf{margin-top:10px;padding-top:9px;border-top:1px solid rgba(255,255,255,.12);display:flex;align-items:center;gap:8px;font-size:11px}
+.fed-darf-label{color:rgba(255,255,255,.45);font-size:10px;text-transform:uppercase;letter-spacing:.07em}
+.fed-darf-code{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:600;color:rgba(255,255,255,.9);letter-spacing:.08em;cursor:pointer;padding:2px 8px;border-radius:5px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);transition:background .15s,border-color .15s}
+.fed-darf-code:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.4)}
+.fed-darf-code.copiado{background:rgba(21,128,61,.35);border-color:#86efac;color:#bbf7d0}
+.fed-card.inativo .fed-darf{display:none}
+
+.tooltip-trigger{position:relative;cursor:default}
+.tip-icon{font-size:9px;font-style:normal;opacity:.55;margin-left:4px;vertical-align:middle;font-family:'IBM Plex Sans',sans-serif}
+.darf-tooltip{position:fixed;z-index:9999;background:var(--g800);color:#fff;border-radius:8px;padding:9px 13px;font-family:'IBM Plex Sans',sans-serif;font-size:12px;line-height:1.6;box-shadow:0 6px 24px rgba(0,0,0,.22);pointer-events:none;opacity:0;transition:opacity .15s;max-width:220px;white-space:nowrap}
+.darf-tooltip.visivel{opacity:1}
+.darf-tooltip strong{display:block;font-family:'IBM Plex Mono',monospace;font-size:15px;letter-spacing:.06em;color:#fff;margin-bottom:2px}
+.darf-tooltip small{font-size:11px;color:var(--g400)}
+.darf-tooltip .tip-copy-hint{display:block;margin-top:5px;font-size:10px;color:rgba(255,255,255,.35);border-top:1px solid rgba(255,255,255,.1);padding-top:5px}
+
+.td-aliq{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--g400)}
+.td-base{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--g500)}
+.td-valor-wrap{display:flex;align-items:center;justify-content:center}
+
+.td-check{text-align:center;width:52px}
+.check-tributo{appearance:none;-webkit-appearance:none;width:22px;height:22px;border-radius:6px;border:2px solid var(--g300);background:var(--g50);cursor:pointer;transition:all .18s;position:relative;display:inline-block;vertical-align:middle;flex-shrink:0}
+.check-tributo:hover{border-color:var(--green);background:var(--green-s)}
+.check-tributo:checked{background:var(--green);border-color:var(--green)}
+.check-tributo:checked::after{content:'';position:absolute;left:5px;top:2px;width:8px;height:12px;border:2.5px solid #fff;border-top:none;border-left:none;transform:rotate(45deg)}
+tbody tr.linha-conferida td{opacity:.6}
+tbody tr.linha-conferida .badge-tributo{text-decoration:line-through;text-decoration-color:rgba(21,128,61,.5)}
+.check-counter-pill{font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;margin-left:8px;background:var(--g200);color:var(--g500);transition:background .2s,color .2s;display:inline-flex;align-items:center;gap:5px}
+.check-counter-pill.parcial{background:rgba(245,158,11,.18);color:#92400e}
+.check-counter-pill.completo{background:var(--green-s);color:var(--green);border:1px solid #86efac}
+.check-counter-pill.completo::before{content:'✔ '}
+
+.valor-editavel{width:130px;height:38px;padding:7px 10px;border-radius:var(--r-sm);border:1.5px solid var(--g200);font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500;background:var(--g50);color:var(--g800);text-align:right;transition:border-color .18s,box-shadow .18s}
+.valor-editavel:focus{outline:none;border-color:var(--accent);background:#fff;box-shadow:0 0 0 3px rgba(29,78,216,.09)}
+.valor-destaque{border-color:#bfdbfe;background:var(--accent-s);color:var(--accent)}
+.valor-destaque:focus{border-color:var(--accent)}
+
+.subtotal-col{width:200px;text-align:center}
+.subtotal-box{background:var(--green-s);border:1px solid #86efac;border-radius:var(--r-sm);padding:9px 12px;text-align:center}
+.subtotal-box strong{display:block;font-family:'IBM Plex Mono',monospace;font-size:14px;font-weight:600;color:var(--green)}
+.subtotal-small{font-size:11px;color:var(--g400);margin-top:3px}
+
+.history-panel{background:white;border-radius:var(--r);box-shadow:var(--sh-md);padding:16px;margin-top:16px;display:none}
+.history-panel.show{display:block}
+.history-list{max-height:200px;overflow-y:auto;margin-top:8px}
+.history-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;border-bottom:1px solid var(--g200);cursor:pointer}
+.history-item:hover{background:var(--g50)}
+.history-date{font-size:12px;color:var(--g500)}
+.history-value{font-family:'IBM Plex Mono',monospace;font-size:13px;font-weight:500}
+
+@media(max-width:1100px){.page-body{grid-template-columns:1fr}.sidebar{position:static}}
+@media(max-width:700px){.sum-row{grid-template-columns:1fr}.fed-row{grid-template-columns:1fr}.topbar{padding:0 16px}.page-head{padding:20px 16px}.page-body{padding:16px 14px 40px;gap:14px}.topbar-pill{display:none}thead th:nth-child(3),tbody td:nth-child(3){display:none}}
+
+/* ===== MELHORIAS ADICIONADAS v3 ===== */
+.toast-container{position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--navy);color:#fff;padding:12px 18px;border-radius:var(--r-sm);font-size:13px;font-weight:500;box-shadow:var(--sh-lg);transform:translateX(120%);transition:transform .3s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:10px;pointer-events:all;max-width:320px}
+.toast.show{transform:translateX(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:var(--red)}
+.toast.warning{background:var(--amber)}
+
+button:focus-visible,input:focus-visible,select:focus-visible,.valor-editavel:focus-visible,.fed-darf-code:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+@media print{.topbar,.sidebar,.btn-calc,.btn-reset,.btn-history,.modal-overlay,.toast-container,.fed-darf-code,.btn-desfazer,.check-tributo,.td-check{display:none!important}.page-body{grid-template-columns:1fr;padding:0}.right{gap:12px}.sum-card,.fed-card,.table-card{box-shadow:none;border:1px solid var(--g200)}body{background:#fff}}
+
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--g400)}
+.empty-state i{font-size:32px;margin-bottom:12px;display:block;opacity:.5}
+.empty-state p{font-size:13px}
+
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.shimmer{background:linear-gradient(90deg,var(--g100) 25%,var(--g200) 50%,var(--g100) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:4px}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon"><i class="fa-regular fa-clipboard"></i></div>
+    <div class="brand-name">SIAFI / Comprasnet<small>Sistema de Conferência de NFS-e</small></div>
+  </div>
+  <div style="display:flex;align-items:center;gap:12px">
+  <button id="themeToggle" type="button" title="Alternar tema claro/escuro" style="background:none;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.7);padding:6px 12px;border-radius:20px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:6px">
+    <i class="fa-solid fa-moon"></i> <span id="themeLabel">Escuro</span>
+  </button>
+  <div class="topbar-pill">v3.0 · 2026</div>
+</div>
+</div>
+
+<div class="page-head">
+  <div class="breadcrumb">Início <span style="opacity:.35">›</span> Conferência <span style="opacity:.35">›</span> NFS-e</div>
+  <h1><i class="fa-solid fa-file-invoice-dollar"></i> Conferência de NFS-e — SIAFI</h1>
+  <p>Retenções federais · ISS · INSS · Conta Vinculada · Recursos Hídricos · Conferência operacional</p>
+</div>
+
+<div class="page-body">
+  <aside class="sidebar">
+    <div class="sidebar-head"><i class="fa-solid fa-pen-to-square"></i><h2>Dados da Nota</h2></div>
+    <div class="sidebar-body">
+      <div class="sep-label">Valores</div>
+      <label for="valorBruto">Valor Bruto da Nota (R$)</label>
+      <input type="text" inputmode="numeric" id="valorBruto" value="" placeholder="0,00" aria-label="Valor bruto da nota fiscal" autocomplete="off">
+      <div class="campo-erro-msg" id="valorBrutoErro" role="alert" aria-live="polite">⚠ Informe o Valor Bruto da nota antes de conferir</div>
+
+      <label for="iss">Alíquota ISS (%)</label>
+      <input type="number" id="iss" value="5" step="0.01" min="0" max="100" aria-label="Alíquota do ISS">
+
+      <div class="sep-label">Federal</div>
+      <label for="regime">Regime Tributos Federais</label>
+      <select id="regime" aria-label="Regime de tributos federais">
+        <option value="945">9,45% — IR 4,8% (Tradicional)</option>
+        <option value="585">5,85% — IR 1,2% (Reduzido)</option>
+        <option value="simples">Simples Nacional</option>
+      </select>
+
+      <label for="federalSeparado">PIS/COFINS deduz ISS da base?</label>
+      <select id="federalSeparado" aria-label="PIS e COFINS deduz ISS da base de cálculo">
+        <option value="nao">Não</option>
+        <option value="sim">Sim</option>
+      </select>
+
+      <div class="sep-label">INSS</div>
+      <label for="inssAliquota">Alíquota INSS (%)</label>
+      <select id="inssAliquota" aria-label="Alíquota do INSS">
+        <option value="11">11%</option>
+        <option value="3.5">3,5%</option>
+        <option value="0">0% — Sem retenção INSS</option>
+      </select>
+
+      <label for="baseInss">Base de Cálculo INSS (R$)</label>
+      <input type="text" inputmode="numeric" id="baseInss" value="" placeholder="0,00" aria-label="Base de cálculo do INSS" autocomplete="off">
+      <p class="helper">Preenchida automaticamente com o valor bruto. Quando o INSS for 0%, a base será zerada automaticamente.</p>
+
+      <div class="obs-box" id="inssNotice" style="display:none;background:#dcfce7;border-color:#86efac;color:#166534" role="status" aria-live="polite">
+        <strong><i class="fa-solid fa-shield-halved"></i> INSS não aplicável</strong>
+        Documento sem retenção previdenciária.
+      </div>
+
+      <div class="sep-label">Deduções</div>
+      <label for="recursosHidricos">Valor Recursos Hídricos (R$)</label>
+      <input type="text" inputmode="numeric" id="recursosHidricos" value="" placeholder="0,00" aria-label="Valor de recursos hídricos" autocomplete="off">
+
+      <div class="sep-label">Conta Vinculada</div>
+      <label for="conta">Valor Conta Vinculada (R$)</label>
+      <input type="text" inputmode="numeric" id="conta" value="" placeholder="0,00" aria-label="Valor da conta vinculada" autocomplete="off">
+      <div class="conta-warn" id="contaWarn" role="alert" aria-live="assertive"><i class="fa-solid fa-triangle-exclamation"></i> Conta vinculada excede o valor líquido</div>
+
+      <div class="obs-box">
+        <strong><i class="fa-solid fa-circle-info"></i> Observação</strong>
+        O sistema considera exclusão do ISS da base do PIS/COFINS quando selecionado.
+      </div>
+
+      <button class="btn-calc" id="btnCalcular" type="button"><i class="fa-solid fa-magnifying-glass-dollar"></i> Conferir Nota</button>
+      <button class="btn-reset" id="btnReset" type="button"><i class="fa-solid fa-undo-alt"></i> Restaurar Padrão</button>
+      <button class="btn-history" id="btnSaveHistory" type="button"><i class="fa-solid fa-floppy-disk"></i> Salvar Conferência</button>
+      <button class="btn-history" id="btnShowHistory" type="button"><i class="fa-solid fa-clock-rotate-left"></i> Histórico</button>
+      <div id="historyPanel" class="history-panel" role="region" aria-label="Painel de histórico">
+        <strong><i class="fa-regular fa-folder-open"></i> Conferências salvas</strong>
+        <div id="historyList" class="history-list"></div>
+      </div>
+    </div>
+  </aside>
+
+  <div class="right">
+    <div class="sum-row">
+      <div class="sum-card c-ret" role="region" aria-label="Total de retenções">
+        <div class="sum-label"><i class="fa-solid fa-file-invoice-dollar"></i> Total Retenções</div>
+        <div class="sum-value" id="totalRetencoes">R$ 0,00</div>
+        <div class="sum-bg"><i class="fa-solid fa-receipt"></i></div>
+      </div>
+      <div class="sum-card c-liq" role="region" aria-label="Valor líquido">
+        <div class="sum-label"><i class="fa-solid fa-money-bill-wave"></i> Valor Líquido</div>
+        <div class="sum-value" id="valorLiquido">R$ 0,00</div>
+        <div class="sum-bg"><i class="fa-solid fa-wallet"></i></div>
+      </div>
+      <div class="sum-card c-cre" role="region" aria-label="Valor ao credor">
+        <div class="sum-label"><i class="fa-solid fa-building-columns"></i> Valor ao Credor</div>
+        <div class="sum-value" id="valorCredor">R$ 0,00</div>
+        <div class="sum-bg"><i class="fa-solid fa-building-circle-check"></i></div>
+      </div>
+    </div>
+
+    <div class="fed-row">
+      <div class="fed-card" id="card945" role="region" aria-label="Regime federal 9,45 por cento">
+        <div class="fed-label"><i class="fa-solid fa-landmark"></i> Somatório Federal 9,45%</div>
+        <div class="fed-value" id="federal945"><i class="fa-solid fa-coins" style="margin-right:8px;opacity:.75"></i>R$ 0,00</div>
+        <div class="fed-desc">IR 4,8% + PIS 0,65% + COFINS 3% + CSLL 1%</div>
+        <div class="fed-darf">
+          <span class="fed-darf-label"><i class="fa-solid fa-barcode"></i> DARF</span>
+          <button class="fed-darf-code" data-codigo="6190" title="Clique para copiar código DARF 6190" type="button">6190</button>
+        </div>
+      </div>
+      <div class="fed-card" id="card585" role="region" aria-label="Regime federal 5,85 por cento">
+        <div class="fed-label"><i class="fa-solid fa-scale-balanced"></i> Somatório Federal 5,85%</div>
+        <div class="fed-value" id="federal585"><i class="fa-solid fa-sack-dollar" style="margin-right:8px;opacity:.75"></i>R$ 0,00</div>
+        <div class="fed-desc">IR 1,2% + PIS 0,65% + COFINS 3% + CSLL 1%</div>
+        <div class="fed-darf">
+          <span class="fed-darf-label"><i class="fa-solid fa-barcode"></i> DARF</span>
+          <button class="fed-darf-code" data-codigo="6147" title="Clique para copiar código DARF 6147" type="button">6147</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-head-bar">
+        <div class="table-head-title"><i class="fa-solid fa-table-list"></i> Detalhamento das Retenções</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span class="check-counter-pill" id="checkCounter" role="status" aria-live="polite"><i class="fa-regular fa-circle-check"></i> 0 / 6</span>
+          <div class="total-pill" id="totalPill">—</div>
+        </div>
+      </div>
+      <table role="table" aria-label="Detalhamento das retenções tributárias">
+        <thead>
+          <tr role="row">
+            <th scope="col" role="columnheader">Tributo</th>
+            <th scope="col" role="columnheader">Alíquota</th>
+            <th scope="col" role="columnheader">Base de Cálculo</th>
+            <th scope="col" role="columnheader" style="text-align:center">Valor (editável)</th>
+            <th scope="col" role="columnheader" style="text-align:center">Subtotal Federal</th>
+            <th scope="col" role="columnheader" style="text-align:center" title="Conferido">✔</th>
+          </tr>
+        </thead>
+        <tbody id="tabelaResultados">
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <i class="fa-solid fa-calculator"></i>
+                <p>Preencha o valor bruto e clique em <strong>Conferir Nota</strong> para visualizar o detalhamento.</p>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="darf-tooltip" id="darfTooltip" role="tooltip"></div>
+<div class="toast-container" id="toastContainer" aria-live="assertive" aria-atomic="true"></div>
+
+<div class="modal-overlay" id="modalSalvar" role="dialog" aria-modal="true" aria-labelledby="modalTitulo">
+  <div class="modal-box">
+    <h3 id="modalTitulo"><i class="fa-solid fa-floppy-disk" style="color:var(--navy);margin-right:7px"></i>Salvar Conferência</h3>
+    <p>Dê um nome para identificar esta conferência no histórico.</p>
+    <input class="modal-input" id="modalNome" type="text" placeholder="Ex: Empresa X — NF 123" maxlength="60" aria-label="Nome da conferência">
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-cancel" id="modalCancelar" type="button">Cancelar</button>
+      <button class="modal-btn modal-btn-save" id="modalSalvarBtn" type="button"><i class="fa-solid fa-check" style="margin-right:5px"></i>Salvar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONSTANTS & CONFIGURATION
+// ============================================================
+const CONFIG = {
+  ALIQUOTAS: { PIS: 0.0065, COFINS: 0.03, CSLL: 0.01, IR_945: 0.048, IR_585: 0.012 },
+  TRIBUTOS: ['ISS', 'INSS', 'IR', 'PIS', 'COFINS', 'CSLL'],
+  CODIGOS_DARF: {
+    ISS:    { cod: null,   guia: 'DAM',  info: 'Código varia por município — consulte o SiafWeb' },
+    INSS:   { cod: '1162', guia: 'GPS',  info: 'GPS — cód. 1162' },
+    IR:     { cod: '6256', guia: 'DARF', info: 'DARF — cód. 6256' },
+    PIS:    { cod: '6230', guia: 'DARF', info: 'DARF — cód. 6230' },
+    COFINS: { cod: '6243', guia: 'DARF', info: 'DARF — cód. 6243' },
+    CSLL:   { cod: '6228', guia: 'DARF', info: 'DARF — cód. 6228' },
+  },
+  STORAGE_KEY: 'nfsHistory_v3',
+  MAX_HISTORY: 20
+};
+
+// ============================================================
+// STATE MANAGEMENT (Single source of truth)
+// ============================================================
+const State = {
+  bruto: 0, issAliquota: 5, regime: '945', federalSeparado: 'nao',
+  inssAliquota: 11, baseInss: 0, recursosHidricos: 0, conta: 0, baseInssManual: false,
+  tributos: {}, totalRetencoes: 0, liquido: 0, credor: 0, totalFederal: 0,
+  ajustes: {}, conferidos: {}, valoresOriginais: {},
+
+  reset() {
+    this.bruto = 0; this.issAliquota = 5; this.regime = '945'; this.federalSeparado = 'nao';
+    this.inssAliquota = 11; this.baseInss = 0; this.recursosHidricos = 0; this.conta = 0;
+    this.baseInssManual = false; this.ajustes = {}; this.conferidos = {}; this.valoresOriginais = {};
+    this.tributos = {}; this.totalRetencoes = 0; this.liquido = 0; this.credor = 0; this.totalFederal = 0;
+  },
+  setAjuste(nome, valor) { this.ajustes[nome] = valor; },
+  removeAjuste(nome) { delete this.ajustes[nome]; },
+  toggleConferido(nome, checked) { if (checked) this.conferidos[nome] = true; else delete this.conferidos[nome]; },
+  isConferido(nome) { return !!this.conferidos[nome]; },
+  isAjustado(nome) { return !!this.ajustes[nome]; },
+  getValorOriginal(nome) { return this.valoresOriginais[nome] ?? 0; },
+  setValorOriginal(nome, valor) { this.valoresOriginais[nome] = valor; }
+};
+
+// ============================================================
+// PURE CALCULATION FUNCTIONS (no side effects)
+// ============================================================
+function parseNumero(valor) {
+  if (valor === undefined || valor === null) return 0;
+  if (typeof valor === 'number' && Number.isFinite(valor)) return valor;
+  let str = String(valor).trim();
+  if (str === '') return 0;
+  str = str.replace(/[^\d,.-]/g, '');
+  if (str.includes(',')) { str = str.replace(/\./g, ''); str = str.replace(',', '.'); }
+  const num = parseFloat(str);
+  return Number.isFinite(num) ? num : 0;
+}
+
+function moeda(valor) {
+  const v = parseNumero(valor);
+  return v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function calcularTributosPuros(state) {
+  const bruto = state.bruto;
+  const aliqISS = state.issAliquota / 100;
+  const recHid = state.recursosHidricos;
+  const regime = state.regime;
+  const federalSep = state.federalSeparado === 'sim';
+  const inssAliq = state.inssAliquota / 100;
+  const baseInss = state.inssAliquota === 0 ? 0 : state.baseInss;
+
+  const valorISS = bruto * aliqISS;
+  const baseFed = Math.max(0, bruto - recHid);
+  const basePisCofins = federalSep ? Math.max(0, baseFed - valorISS) : baseFed;
+
+  let aliqIR = 0, aliqPIS = CONFIG.ALIQUOTAS.PIS, aliqCOFINS = CONFIG.ALIQUOTAS.COFINS, aliqCSLL = CONFIG.ALIQUOTAS.CSLL;
+  if (regime === '945') aliqIR = CONFIG.ALIQUOTAS.IR_945;
+  else if (regime === '585') aliqIR = CONFIG.ALIQUOTAS.IR_585;
+  else if (regime === 'simples') { aliqIR = 0; aliqPIS = 0; aliqCOFINS = 0; aliqCSLL = 0; }
+
+  const round = v => Math.round(v * 100) / 100;
+
+  const tributos = {
+    ISS:    { aliquota: aliqISS,    base: Math.max(0, bruto),         valor: round(Math.max(0, bruto) * aliqISS) },
+    INSS:   { aliquota: inssAliq,   base: Math.max(0, baseInss),       valor: round(Math.max(0, baseInss) * inssAliq) },
+    IR:     { aliquota: aliqIR,     base: Math.max(0, baseFed),        valor: round(Math.max(0, baseFed) * aliqIR) },
+    PIS:    { aliquota: aliqPIS,    base: Math.max(0, basePisCofins),  valor: round(Math.max(0, basePisCofins) * aliqPIS) },
+    COFINS: { aliquota: aliqCOFINS, base: Math.max(0, basePisCofins),  valor: round(Math.max(0, basePisCofins) * aliqCOFINS) },
+    CSLL:   { aliquota: aliqCSLL,   base: Math.max(0, baseFed),        valor: round(Math.max(0, baseFed) * aliqCSLL) }
+  };
+
+  const subtotalFederal = round(tributos.PIS.valor + tributos.COFINS.valor + tributos.CSLL.valor);
+  const totalFederal = round(tributos.IR.valor + subtotalFederal);
+  const totalRetencoes = round(Object.values(tributos).reduce((s, t) => s + t.valor, 0));
+  const liquido = round(bruto - totalRetencoes);
+  const credor = round(liquido - state.conta);
+
+  return { tributos, subtotalFederal, totalFederal, totalRetencoes, liquido, credor };
+}
+
+// ============================================================
+// TOAST NOTIFICATIONS
+// ============================================================
+function showToast(message, type = 'info', duration = 3000) {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  const icons = { info: 'fa-circle-info', success: 'fa-check-circle', error: 'fa-circle-xmark', warning: 'fa-triangle-exclamation' };
+  toast.innerHTML = `<i class="fa-solid ${icons[type] || icons.info}"></i> ${message}`;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, duration);
+}
+
+// ============================================================
+// DOM RENDERING (separated from calculation)
+// ============================================================
+function criarBadgeTributo(nome, dc) {
+  const span = document.createElement('span');
+  span.className = `badge-tributo t-${nome}`;
+  span.textContent = nome;
+  if (dc) {
+    span.setAttribute('data-cod', dc.cod || '');
+    span.setAttribute('data-info', dc.info);
+    span.setAttribute('data-guia', dc.guia);
+    span.classList.add('tooltip-trigger');
+    const tip = document.createElement('span');
+    tip.className = 'tip-icon'; tip.textContent = 'ⓘ'; tip.setAttribute('aria-hidden', 'true');
+    span.appendChild(tip);
+  }
+  return span;
+}
+
+function criarInputValor(nome, valor, isDestaque, isDisabled) {
+  const input = document.createElement('input');
+  input.className = `valor-editavel ${isDestaque ? 'valor-destaque' : ''}`;
+  input.id = `valor-${nome}`;
+  input.type = 'number'; input.step = '0.01'; input.value = valor.toFixed(2);
+  input.disabled = isDisabled;
+  input.setAttribute('aria-label', `Valor calculado do ${nome}`);
+  input.addEventListener('input', () => handleValorInput(nome));
+  return input;
+}
+
+function criarCheckboxConferido(nome, checked) {
+  const input = document.createElement('input');
+  input.type = 'checkbox'; input.className = 'check-tributo';
+  input.id = `check-${nome}`; input.checked = checked;
+  input.setAttribute('aria-label', `Marcar ${nome} como conferido`);
+  input.addEventListener('change', (e) => handleCheckChange(nome, e.target.checked));
+  return input;
+}
+
+function renderizarTabela(resultado) {
+  const tbody = document.getElementById('tabelaResultados');
+  tbody.innerHTML = '';
+
+  if (State.bruto === 0) {
+    const tr = document.createElement('tr');
+    const td = document.createElement('td');
+    td.colSpan = 6;
+    td.innerHTML = `<div class="empty-state"><i class="fa-solid fa-calculator"></i><p>Preencha o valor bruto e clique em <strong>Conferir Nota</strong> para visualizar o detalhamento.</p></div>`;
+    tr.appendChild(td); tbody.appendChild(tr); return;
+  }
+
+  const { tributos, subtotalFederal } = resultado;
+  const regime = State.regime;
+
+  CONFIG.TRIBUTOS.forEach(nome => {
+    const t = tributos[nome];
+    const dc = CONFIG.CODIGOS_DARF[nome];
+    const isAjustado = State.isAjustado(nome);
+    const isConferido = State.isConferido(nome);
+    const isDestaque = nome === 'ISS' || nome === 'INSS';
+    const isDisabled = regime === 'simples' && ['IR', 'PIS', 'COFINS', 'CSLL'].includes(nome);
+
+    if (!State.isAjustado(nome)) State.setValorOriginal(nome, t.valor);
+
+    const tr = document.createElement('tr');
+    tr.id = `linha-${nome}`;
+    if (isAjustado) tr.classList.add('linha-ajustada');
+    if (isConferido) tr.classList.add('linha-conferida');
+
+    const tdNome = document.createElement('td');
+    const badgeWrapper = document.createElement('span');
+    badgeWrapper.className = 'td-nome';
+    badgeWrapper.appendChild(criarBadgeTributo(nome, dc));
+    if (isAjustado) {
+      const badge = document.createElement('span');
+      badge.className = 'badge-ajuste'; badge.textContent = 'AJUSTADO';
+      const btn = document.createElement('button');
+      btn.className = 'btn-desfazer'; btn.innerHTML = '↺'; btn.title = 'Desfazer ajuste';
+      btn.type = 'button'; btn.addEventListener('click', () => handleDesfazerAjuste(nome));
+      badge.appendChild(btn); badgeWrapper.appendChild(badge);
+    }
+    tdNome.appendChild(badgeWrapper); tr.appendChild(tdNome);
+
+    const tdAliq = document.createElement('td');
+    tdAliq.className = 'td-aliq'; tdAliq.textContent = (t.aliquota * 100).toFixed(2) + '%';
+    tr.appendChild(tdAliq);
+
+    const tdBase = document.createElement('td');
+    tdBase.className = 'td-base'; tdBase.textContent = moeda(t.base);
+    tr.appendChild(tdBase);
+
+    const tdValor = document.createElement('td');
+    const wrap = document.createElement('div'); wrap.className = 'td-valor-wrap';
+    wrap.appendChild(criarInputValor(nome, t.valor, isDestaque, isDisabled));
+    tdValor.appendChild(wrap); tr.appendChild(tdValor);
+
+    const tdSubtotal = document.createElement('td');
+    tdSubtotal.className = 'subtotal-col';
+    if (nome === 'CSLL') {
+      const box = document.createElement('div'); box.className = 'subtotal-box'; box.id = 'subtotalFedBox';
+      const strong = document.createElement('strong'); strong.id = 'subtotalFedValor'; strong.textContent = moeda(subtotalFederal);
+      const small = document.createElement('div'); small.className = 'subtotal-small'; small.textContent = 'PIS + COFINS + CSLL';
+      const badgeDiv = document.createElement('div'); badgeDiv.id = 'subtotalFedBadge';
+      box.appendChild(strong); box.appendChild(small); box.appendChild(badgeDiv);
+      tdSubtotal.appendChild(box);
+    } else { tdSubtotal.textContent = '—'; }
+    tr.appendChild(tdSubtotal);
+
+    const tdCheck = document.createElement('td'); tdCheck.className = 'td-check';
+    tdCheck.appendChild(criarCheckboxConferido(nome, isConferido));
+    tr.appendChild(tdCheck);
+
+    tbody.appendChild(tr);
+  });
+}
+
+function renderizarCards(resultado) {
+  const { totalFederal } = resultado;
+  const regime = State.regime;
+  const c945 = document.getElementById('card945');
+  const c585 = document.getElementById('card585');
+  c945.className = 'fed-card'; c585.className = 'fed-card';
+
+  const tagAjustado = temAjusteFederal() ? '<span class="badge-ajuste-card"><i class="fa-solid fa-pen-to-square"></i> AJUSTADO</span>' : '';
+
+  if (regime === '945') {
+    c945.classList.add('ativo'); c585.classList.add('inativo');
+    document.getElementById('federal945').innerHTML = '<i class="fa-solid fa-coins" style="margin-right:8px;opacity:.9"></i>' + moeda(totalFederal) + tagAjustado;
+    document.getElementById('federal585').innerHTML = '<i class="fa-solid fa-sack-dollar" style="margin-right:8px;opacity:.75"></i>' + moeda(0);
+  } else if (regime === '585') {
+    c585.classList.add('ativo'); c945.classList.add('inativo');
+    document.getElementById('federal585').innerHTML = '<i class="fa-solid fa-sack-dollar" style="margin-right:8px;opacity:.9"></i>' + moeda(totalFederal) + tagAjustado;
+    document.getElementById('federal945').innerHTML = '<i class="fa-solid fa-coins" style="margin-right:8px;opacity:.75"></i>' + moeda(0);
+  } else {
+    c945.classList.add('inativo'); c585.classList.add('inativo');
+    document.getElementById('federal945').innerHTML = '<i class="fa-solid fa-coins" style="margin-right:8px;opacity:.75"></i>R$ 0,00';
+    document.getElementById('federal585').innerHTML = '<i class="fa-solid fa-sack-dollar" style="margin-right:8px;opacity:.75"></i>R$ 0,00';
+  }
+}
+
+function renderizarResumo(resultado) {
+  const { totalRetencoes, liquido, credor } = resultado;
+  document.getElementById('totalRetencoes').textContent = moeda(totalRetencoes);
+  document.getElementById('valorLiquido').textContent = moeda(liquido);
+  document.getElementById('valorCredor').textContent = moeda(credor);
+  document.getElementById('totalPill').textContent = 'Total: ' + moeda(totalRetencoes);
+
+  const credorCard = document.querySelector('.sum-card.c-cre');
+  const contaWarn = document.getElementById('contaWarn');
+  if (credor < 0) { credorCard?.classList.add('c-erro'); contaWarn?.classList.add('visivel'); }
+  else { credorCard?.classList.remove('c-erro'); contaWarn?.classList.remove('visivel'); }
+}
+
+function renderizarSubtotalFed() {
+  const pis = parseNumero(document.getElementById('valor-PIS')?.value);
+  const cofins = parseNumero(document.getElementById('valor-COFINS')?.value);
+  const csll = parseNumero(document.getElementById('valor-CSLL')?.value);
+  const total = pis + cofins + csll;
+
+  const valorEl = document.getElementById('subtotalFedValor');
+  const badgeEl = document.getElementById('subtotalFedBadge');
+  const boxEl = document.getElementById('subtotalFedBox');
+
+  if (valorEl) valorEl.textContent = moeda(total);
+  const ajustado = ['PIS', 'COFINS', 'CSLL'].some(n => State.isAjustado(n));
+  if (badgeEl) badgeEl.innerHTML = ajustado ? '<span class="badge-ajuste" style="display:inline-flex;margin-top:5px"><i class="fa-solid fa-pen-to-square" style="margin-right:3px"></i>AJUSTADO</span>' : '';
+  if (boxEl) {
+    if (ajustado) { boxEl.style.background = 'rgba(254,243,199,.6)'; boxEl.style.borderColor = 'rgba(245,158,11,.55)'; }
+    else { boxEl.style.background = ''; boxEl.style.borderColor = ''; }
+  }
+}
+
+function atualizarContadorCheck() {
+  const total = CONFIG.TRIBUTOS.length;
+  const conferidos = CONFIG.TRIBUTOS.filter(n => State.isConferido(n)).length;
+  const pill = document.getElementById('checkCounter');
+  if (!pill) return;
+  pill.innerHTML = `<i class="fa-${conferidos === total ? 'solid' : 'regular'} fa-circle-check"></i> ${conferidos} / ${total}`;
+  pill.className = 'check-counter-pill';
+  if (conferidos === total) pill.classList.add('completo');
+  else if (conferidos > 0) pill.classList.add('parcial');
+
+  // Toggle "conferida" stamp on liquido card
+  const liquidoCard = document.querySelector('.sum-card.c-cre');
+  if (liquidoCard) {
+    if (conferidos === total && State.bruto > 0) liquidoCard.classList.add('conferida');
+    else liquidoCard.classList.remove('conferida');
+  }
+}
+
+function temAjusteFederal() {
+  return ['IR', 'PIS', 'COFINS', 'CSLL'].some(nome => State.isAjustado(nome));
+}
+
+// ============================================================
+// EVENT HANDLERS
+// ============================================================
+function handleValorInput(nome) {
+  const wasAjustado = State.isAjustado(nome);
+  State.setAjuste(nome, true);
+
+  // Update the row UI directly (without re-rendering the whole table, which loses focus)
+  const linha = document.getElementById('linha-' + nome);
+  if (linha && !wasAjustado) {
+    linha.classList.add('linha-ajustada');
+    const badgeWrapper = linha.querySelector('.td-nome');
+    if (badgeWrapper) {
+      const existingBadge = badgeWrapper.querySelector('.badge-ajuste');
+      if (!existingBadge) {
+        const badge = document.createElement('span');
+        badge.className = 'badge-ajuste';
+        badge.textContent = 'AJUSTADO';
+        const btn = document.createElement('button');
+        btn.className = 'btn-desfazer';
+        btn.innerHTML = '↺';
+        btn.title = 'Desfazer ajuste';
+        btn.type = 'button';
+        btn.addEventListener('click', () => handleDesfazerAjuste(nome));
+        badge.appendChild(btn);
+        badgeWrapper.appendChild(badge);
+      }
+    }
+  }
+
+  recalcularTotais();
+}
+
+function handleDesfazerAjuste(nome) {
+  State.removeAjuste(nome);
+
+  // Restore original value
+  const el = document.getElementById('valor-' + nome);
+  if (el) el.value = State.getValorOriginal(nome).toFixed(2);
+
+  // Remove badge and row highlight
+  const linha = document.getElementById('linha-' + nome);
+  if (linha) {
+    linha.classList.remove('linha-ajustada');
+    const badge = linha.querySelector('.badge-ajuste');
+    if (badge) badge.remove();
+  }
+
+  recalcularTotais();
+}
+
+function handleCheckChange(nome, checked) {
+  State.toggleConferido(nome, checked);
+  const linha = document.getElementById('linha-' + nome);
+  if (linha) {
+    if (checked) linha.classList.add('linha-conferida');
+    else linha.classList.remove('linha-conferida');
+  }
+  atualizarContadorCheck();
+}
+
+// ============================================================
+// RECALCULATION
+// ============================================================
+function recalcularTotais() {
+  const bruto = State.bruto;
+  const conta = State.conta;
+  const regime = State.regime;
+
+  let totalRetencoes = 0;
+  CONFIG.TRIBUTOS.forEach(nome => {
+    const campo = document.getElementById('valor-' + nome);
+    if (campo) totalRetencoes += parseNumero(campo.value);
+  });
+
+  const liquido = Math.round((bruto - totalRetencoes) * 100) / 100;
+  const credor = Math.round((liquido - conta) * 100) / 100;
+
+  document.getElementById('totalRetencoes').textContent = moeda(totalRetencoes);
+  document.getElementById('valorLiquido').textContent = moeda(liquido);
+  document.getElementById('valorCredor').textContent = moeda(credor);
+  document.getElementById('totalPill').textContent = 'Total: ' + moeda(totalRetencoes);
+
+  const credorCard = document.querySelector('.sum-card.c-cre');
+  const contaWarn = document.getElementById('contaWarn');
+  if (credor < 0) { credorCard?.classList.add('c-erro'); contaWarn?.classList.add('visivel'); }
+  else { credorCard?.classList.remove('c-erro'); contaWarn?.classList.remove('visivel'); }
+
+  let totalFed = 0;
+  ['IR', 'PIS', 'COFINS', 'CSLL'].forEach(nome => {
+    const campo = document.getElementById('valor-' + nome);
+    if (campo) totalFed += parseNumero(campo.value);
+  });
+
+  const tagAjustado = temAjusteFederal() ? '<span class="badge-ajuste-card"><i class="fa-solid fa-pen-to-square"></i> AJUSTADO</span>' : '';
+  if (regime === '945') document.getElementById('federal945').innerHTML = '<i class="fa-solid fa-coins" style="margin-right:8px;opacity:.9"></i>' + moeda(totalFed) + tagAjustado;
+  else if (regime === '585') document.getElementById('federal585').innerHTML = '<i class="fa-solid fa-sack-dollar" style="margin-right:8px;opacity:.9"></i>' + moeda(totalFed) + tagAjustado;
+
+  renderizarSubtotalFed();
+}
+
+// ============================================================
+// MAIN CALCULATION FLOW
+// ============================================================
+function syncStateFromDOM() {
+  State.bruto = parseNumero(document.getElementById('valorBruto').value);
+  State.issAliquota = parseNumero(document.getElementById('iss').value);
+  State.regime = document.getElementById('regime').value;
+  State.federalSeparado = document.getElementById('federalSeparado').value;
+  State.inssAliquota = parseNumero(document.getElementById('inssAliquota').value);
+  State.baseInss = parseNumero(document.getElementById('baseInss').value);
+  State.recursosHidricos = parseNumero(document.getElementById('recursosHidricos').value);
+  State.conta = parseNumero(document.getElementById('conta').value);
+}
+
+function calcularCompleto() {
+  syncStateFromDOM();
+
+  const vbEl = document.getElementById('valorBruto');
+  const erroEl = document.getElementById('valorBrutoErro');
+
+  if (State.bruto === 0) {
+    vbEl.classList.add('campo-erro');
+    if (erroEl) erroEl.classList.add('visivel');
+    const resultado = calcularTributosPuros(State);
+    renderizarTabela(resultado);
+    renderizarCards(resultado);
+    renderizarResumo(resultado);
+    atualizarEstadoRegime();
+    atualizarContadorCheck();
+    return;
+  }
+
+  vbEl.classList.remove('campo-erro');
+  if (erroEl) erroEl.classList.remove('visivel');
+
+  const resultado = calcularTributosPuros(State);
+  State.tributos = resultado.tributos;
+  State.totalRetencoes = resultado.totalRetencoes;
+  State.liquido = resultado.liquido;
+  State.credor = resultado.credor;
+  State.totalFederal = resultado.totalFederal;
+
+  renderizarTabela(resultado);
+  renderizarCards(resultado);
+  renderizarResumo(resultado);
+  renderizarSubtotalFed();
+  atualizarEstadoRegime();
+  atualizarContadorCheck();
+}
+
+function atualizarEstadoRegime() {
+  const regime = State.regime;
+  const isSimples = regime === 'simples';
+  ['IR', 'PIS', 'COFINS', 'CSLL'].forEach(nome => {
+    const inp = document.getElementById('valor-' + nome);
+    if (inp) {
+      inp.disabled = isSimples;
+      if (isSimples && !State.isAjustado(nome)) inp.value = '0.00';
+    }
+  });
+}
+
+function atualizarRegraInss() {
+  const aliquota = State.inssAliquota;
+  const baseInput = document.getElementById('baseInss');
+  const aviso = document.getElementById('inssNotice');
+  const bruto = State.bruto;
+
+  if (aliquota === 0) {
+    baseInput.value = '0,00';
+    baseInput.dataset.manual = 'false';
+    baseInput.disabled = true;
+    baseInput.style.background = '#e2e8f0';
+    aviso.style.display = 'block';
+  } else {
+    if (baseInput.dataset.manual !== 'true' && parseNumero(baseInput.value) === 0 && bruto > 0) {
+      baseInput.value = bruto.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+    baseInput.disabled = false;
+    baseInput.style.background = '';
+    aviso.style.display = 'none';
+  }
+}
+
+function resetarValores() {
+  State.reset();
+
+  document.getElementById('valorBruto').value = '';
+  document.getElementById('iss').value = '5';
+  document.getElementById('regime').value = '945';
+  document.getElementById('federalSeparado').value = 'nao';
+  document.getElementById('inssAliquota').value = '11';
+  document.getElementById('baseInss').value = '';
+  document.getElementById('recursosHidricos').value = '';
+  document.getElementById('conta').value = '';
+  document.getElementById('baseInss').dataset.manual = 'false';
+
+  document.getElementById('valorBruto').classList.remove('campo-erro');
+  document.getElementById('valorBrutoErro')?.classList.remove('visivel');
+
+  const resultado = calcularTributosPuros(State);
+  renderizarTabela(resultado);
+  renderizarCards(resultado);
+  renderizarResumo(resultado);
+  atualizarRegraInss();
+  atualizarEstadoRegime();
+  atualizarContadorCheck();
+}
+
+// ============================================================
+// MÁSCARA MONETÁRIA UNIFICADA
+// ============================================================
+function aplicarMascaraMoeda(elemento) {
+  if (!elemento) return;
+  elemento.addEventListener('input', function(e) {
+    let raw = e.target.value.replace(/\D/g, '');
+    if (raw === '') { e.target.value = ''; return; }
+    const num = parseInt(raw, 10) / 100;
+    e.target.value = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  });
+  elemento.addEventListener('blur', function() {
+    const num = parseNumero(elemento.value);
+    if (num === 0 && elemento.value === '') return;
+    elemento.value = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  });
+}
+
+// ============================================================
+// HISTÓRICO (localStorage com validação)
+// ============================================================
+function validarHistoricoItem(item) {
+  if (!item || typeof item !== 'object') return false;
+  if (!item.timestamp || !item.valorBruto) return false;
+  return true;
+}
+
+function getHistorico() {
+  try {
+    const raw = localStorage.getItem(CONFIG.STORAGE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(validarHistoricoItem);
+  } catch (e) {
+    console.error('Erro ao carregar histórico:', e);
+    return [];
+  }
+}
+
+function setHistorico(historico) {
+  try {
+    localStorage.setItem(CONFIG.STORAGE_KEY, JSON.stringify(historico));
+  } catch (e) {
+    showToast('Erro ao salvar no histórico. Armazenamento pode estar cheio.', 'error');
+  }
+}
+
+function salvarConferencia() {
+  if (State.bruto === 0) {
+    const vbEl = document.getElementById('valorBruto');
+    vbEl.classList.add('campo-erro');
+    document.getElementById('valorBrutoErro')?.classList.add('visivel');
+    return;
+  }
+  abrirModalSalvar();
+}
+
+function abrirModalSalvar() {
+  const modal = document.getElementById('modalSalvar');
+  const input = document.getElementById('modalNome');
+  input.value = '';
+  modal.classList.add('show');
+  setTimeout(() => input.focus(), 80);
+}
+
+function fecharModalSalvar() {
+  document.getElementById('modalSalvar').classList.remove('show');
+}
+
+function confirmarSalvar() {
+  const nome = document.getElementById('modalNome').value.trim();
+  fecharModalSalvar();
+
+  const valoresAjustados = {};
+  CONFIG.TRIBUTOS.forEach(n => {
+    if (State.isAjustado(n)) {
+      const el = document.getElementById('valor-' + n);
+      if (el) valoresAjustados[n] = el.value;
+    }
+  });
+
+  const estado = {
+    timestamp: new Date().toISOString(),
+    nome: nome || null,
+    valorBruto: document.getElementById('valorBruto').value,
+    iss: document.getElementById('iss').value,
+    regime: State.regime,
+    federalSeparado: State.federalSeparado,
+    inssAliquota: State.inssAliquota,
+    baseInss: document.getElementById('baseInss').value,
+    recursosHidricos: document.getElementById('recursosHidricos').value,
+    conta: document.getElementById('conta').value,
+    ajustes: { ...State.ajustes },
+    valoresAjustados,
+    conferidos: { ...State.conferidos }
+  };
+
+  let historico = getHistorico();
+  historico.unshift(estado);
+  if (historico.length > CONFIG.MAX_HISTORY) historico.pop();
+  setHistorico(historico);
+  renderizarHistorico();
+  showToast('Conferência salva com sucesso!', 'success');
+}
+
+function carregarHistorico(idx) {
+  const historico = getHistorico();
+  const estado = historico[idx];
+  if (!estado) return;
+
+  document.getElementById('valorBruto').value = estado.valorBruto;
+  document.getElementById('iss').value = estado.iss;
+  document.getElementById('regime').value = estado.regime;
+  document.getElementById('federalSeparado').value = estado.federalSeparado;
+  document.getElementById('inssAliquota').value = String(estado.inssAliquota);
+  document.getElementById('baseInss').value = estado.baseInss;
+  document.getElementById('recursosHidricos').value = estado.recursosHidricos;
+  document.getElementById('conta').value = estado.conta;
+
+  State.reset();
+  syncStateFromDOM();
+
+  // Restaurar ajustes
+  const ajustesRestaurados = estado.ajustes || {};
+  const valoresRestaurados = estado.valoresAjustados || {};
+  Object.keys(ajustesRestaurados).forEach(nome => {
+    if (!ajustesRestaurados[nome]) return;
+    State.setAjuste(nome, true);
+  });
+
+  // Restaurar conferidos
+  const conferidosRestaurados = estado.conferidos || {};
+  Object.keys(conferidosRestaurados).forEach(nome => {
+    if (conferidosRestaurados[nome]) State.toggleConferido(nome, true);
+  });
+
+  calcularCompleto();
+
+  // Aplicar valores ajustados após renderização
+  Object.keys(ajustesRestaurados).forEach(nome => {
+    if (!ajustesRestaurados[nome]) return;
+    const el = document.getElementById('valor-' + nome);
+    if (el && valoresRestaurados[nome] !== undefined) {
+      el.value = valoresRestaurados[nome];
+    }
+  });
+
+  if (Object.keys(ajustesRestaurados).length > 0) recalcularTotais();
+
+  document.getElementById('historyPanel').classList.remove('show');
+  showToast('Conferência carregada!', 'info');
+}
+
+function deletarHistorico(e, idx) {
+  e.stopPropagation();
+  if (!confirm('Tem certeza que deseja excluir esta conferência do histórico?')) return;
+
+  const historico = getHistorico();
+  historico.splice(idx, 1);
+  setHistorico(historico);
+  renderizarHistorico();
+  showToast('Conferência removida.', 'warning');
+}
+
+function renderizarHistorico() {
+  const historico = getHistorico();
+  const container = document.getElementById('historyList');
+  if (!container) return;
+
+  if (historico.length === 0) {
+    container.innerHTML = '<div class="history-item">Nenhuma conferência salva</div>';
+    return;
+  }
+
+  container.innerHTML = historico.map((item, idx) => {
+    const data = new Date(item.timestamp).toLocaleString('pt-BR');
+    const valor = parseNumero(item.valorBruto).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    const temAjuste = item.ajustes && Object.values(item.ajustes).some(Boolean);
+    const nomeLabel = item.nome
+      ? `<div style="font-weight:600;color:var(--navy);font-size:13px;margin-bottom:2px">${escapeHtml(item.nome)}</div>`
+      : '';
+    return `<div class="history-item" style="cursor:pointer" data-idx="${idx}">
+      <div>
+        ${nomeLabel}
+        <small class="history-date">${data}</small>
+        <div>${valor}${temAjuste ? ' <span style="font-size:10px;color:#92400e;font-weight:700">✎ ajustado</span>' : ''}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <button class="btn-del-hist" data-delete-idx="${idx}" title="Excluir" type="button">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+        <i class="fa-solid fa-arrow-right" style="color:var(--navy)"></i>
+      </div>
+    </div>`;
+  }).join('');
+
+  // Add event listeners via delegation
+  container.querySelectorAll('.history-item').forEach(item => {
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('[data-delete-idx]')) return;
+      const idx = parseInt(item.dataset.idx, 10);
+      carregarHistorico(idx);
+    });
+  });
+
+  container.querySelectorAll('[data-delete-idx]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const idx = parseInt(btn.dataset.deleteIdx, 10);
+      deletarHistorico(e, idx);
+    });
+  });
+}
+
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+function toggleHistory() {
+  const panel = document.getElementById('historyPanel');
+  panel.classList.toggle('show');
+  if (panel.classList.contains('show')) renderizarHistorico();
+}
+
+// ============================================================
+// TOOLTIP DARF (acessível por teclado)
+// ============================================================
+(function(){
+  let hideTimer;
+  const tip = document.getElementById('darfTooltip');
+
+  function showTooltip(badge) {
+    clearTimeout(hideTimer);
+    const info = badge.dataset.info;
+    const cod = badge.dataset.cod;
+    const guia = badge.dataset.guia;
+
+    if (cod && cod !== '') {
+      tip.innerHTML = '<strong>' + guia + ' ' + cod + '</strong><small>' + escapeHtml(info) + '</small><span class="tip-copy-hint"><i class="fa-regular fa-copy"></i> Clique para copiar</span>';
+    } else {
+      tip.innerHTML = '<small>' + escapeHtml(info) + '</small>';
+    }
+
+    const rect = badge.getBoundingClientRect();
+    tip.style.left = Math.min(rect.left, window.innerWidth - 240) + 'px';
+    tip.style.top = (rect.bottom + 8) + 'px';
+    tip.classList.add('visivel');
+  }
+
+  function hideTooltip() {
+    hideTimer = setTimeout(() => tip.classList.remove('visivel'), 150);
+  }
+
+  document.addEventListener('mouseover', function(e) {
+    const badge = e.target.closest('.tooltip-trigger[data-info]');
+    if (!badge) return;
+    showTooltip(badge);
+  });
+
+  document.addEventListener('mouseout', function(e) {
+    const badge = e.target.closest('.tooltip-trigger[data-info]');
+    if (!badge) return;
+    if (e.relatedTarget && badge.contains(e.relatedTarget)) return;
+    hideTooltip();
+  });
+
+  document.addEventListener('focusin', function(e) {
+    const badge = e.target.closest('.tooltip-trigger[data-info]');
+    if (!badge) return;
+    showTooltip(badge);
+  });
+
+  document.addEventListener('focusout', function(e) {
+    const badge = e.target.closest('.tooltip-trigger[data-info]');
+    if (!badge) return;
+    hideTooltip();
+  });
+
+  document.addEventListener('click', function(e) {
+    const badge = e.target.closest('.tooltip-trigger[data-cod]');
+    if (!badge) return;
+    const cod = badge.dataset.cod;
+    if (!cod || cod === '') return;
+    copiarCodigo(badge, cod);
+  });
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') {
+      const badge = e.target.closest('.tooltip-trigger[data-cod]');
+      if (!badge) return;
+      e.preventDefault();
+      const cod = badge.dataset.cod;
+      if (cod && cod !== '') copiarCodigo(badge, cod);
+    }
+  });
+})();
+
+// ============================================================
+// COPIAR CÓDIGO
+// ============================================================
+function copiarCodigo(el, codigo) {
+  navigator.clipboard.writeText(codigo).then(() => {
+    el.classList.add('copiado');
+    const orig = el.innerHTML;
+    el.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+    showToast(`Código ${codigo} copiado!`, 'success', 2000);
+    setTimeout(() => { el.classList.remove('copiado'); el.innerHTML = orig; }, 1800);
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = codigo; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    el.classList.add('copiado');
+    const orig = el.innerHTML;
+    el.innerHTML = '<i class="fa-solid fa-check"></i> Copiado!';
+    showToast(`Código ${codigo} copiado!`, 'success', 2000);
+    setTimeout(() => { el.classList.remove('copiado'); el.innerHTML = orig; }, 1800);
+  });
+}
+
+// ============================================================
+// EVENT LISTENERS & INIT
+// ============================================================
+document.getElementById('btnCalcular').addEventListener('click', calcularCompleto);
+document.getElementById('btnReset').addEventListener('click', () => {
+  resetarValores();
+  showToast('Valores restaurados ao padrão', 'info');
+});
+document.getElementById('btnSaveHistory').addEventListener('click', salvarConferencia);
+document.getElementById('btnShowHistory').addEventListener('click', toggleHistory);
+document.getElementById('regime').addEventListener('change', calcularCompleto);
+document.getElementById('inssAliquota').addEventListener('change', () => {
+  syncStateFromDOM();
+  atualizarRegraInss();
+  calcularCompleto();
+});
+document.getElementById('federalSeparado').addEventListener('change', calcularCompleto);
+document.getElementById('iss').addEventListener('input', calcularCompleto);
+
+// recursosHidricos changes federal base → must recalculate everything
+document.getElementById('recursosHidricos').addEventListener('input', () => {
+  syncStateFromDOM();
+  const resultado = calcularTributosPuros(State);
+  renderizarTabela(resultado);
+  renderizarCards(resultado);
+  renderizarResumo(resultado);
+  renderizarSubtotalFed();
+  atualizarEstadoRegime();
+  atualizarContadorCheck();
+});
+
+// conta only affects credor, no need to recalculate taxes
+document.getElementById('conta').addEventListener('input', recalcularTotais);
+
+// Modal events
+document.getElementById('modalCancelar').addEventListener('click', fecharModalSalvar);
+document.getElementById('modalSalvarBtn').addEventListener('click', confirmarSalvar);
+document.getElementById('modalSalvar').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalSalvar')) fecharModalSalvar();
+});
+document.getElementById('modalNome').addEventListener('keydown', e => {
+  if (e.key === 'Enter') { e.preventDefault(); confirmarSalvar(); }
+  if (e.key === 'Escape') fecharModalSalvar();
+});
+
+// Máscara monetária unificada
+aplicarMascaraMoeda(document.getElementById('valorBruto'));
+aplicarMascaraMoeda(document.getElementById('baseInss'));
+aplicarMascaraMoeda(document.getElementById('recursosHidricos'));
+aplicarMascaraMoeda(document.getElementById('conta'));
+
+// Enter nos campos monetários
+['valorBruto', 'baseInss', 'recursosHidricos', 'conta'].forEach(id => {
+  document.getElementById(id)?.addEventListener('keydown', e => {
+    if (e.key === 'Enter') { e.preventDefault(); calcularCompleto(); }
+  });
+});
+
+// Validação conta vinculada
+document.getElementById('conta').addEventListener('blur', () => {
+  syncStateFromDOM();
+  const liquido = State.bruto - State.totalRetencoes;
+  if (liquido > 0 && State.conta > liquido) {
+    document.getElementById('conta').value = liquido.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    recalcularTotais();
+    showToast('Conta vinculada ajustada ao valor líquido', 'warning');
+  }
+});
+
+// DARF code buttons
+document.querySelectorAll('.fed-darf-code').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const cod = btn.dataset.codigo;
+    if (cod) copiarCodigo(btn, cod);
+  });
+});
+
+// Debounce helper
+function debounce(fn, ms) {
+  let timer;
+  return function(...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn.apply(this, args), ms);
+  };
+}
+
+// Valor bruto → atualiza base INSS automaticamente + debounced recalculation
+document.getElementById('valorBruto').addEventListener('input', () => {
+  const campo = document.getElementById('valorBruto');
+  campo.classList.remove('campo-erro');
+  document.getElementById('valorBrutoErro')?.classList.remove('visivel');
+
+  const base = document.getElementById('baseInss');
+  const aliquota = parseNumero(document.getElementById('inssAliquota').value);
+  if (aliquota > 0 && base.dataset.manual !== 'true') {
+    const num = parseNumero(campo.value);
+    if (num > 0) {
+      base.value = num.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+  }
+});
+
+// Debounced full recalculation on valorBruto (300ms)
+document.getElementById('valorBruto').addEventListener('input', debounce(() => {
+  calcularCompleto();
+}, 300));
+
+// Immediate recalculation on blur
+document.getElementById('valorBruto').addEventListener('blur', () => {
+  calcularCompleto();
+});
+
+// Base INSS manual flag
+document.getElementById('baseInss').addEventListener('blur', () => {
+  const base = document.getElementById('baseInss');
+  if (base.value !== '') base.dataset.manual = 'true';
+});
+
+// Theme toggle
+const THEME_KEY = 'nfsTheme';
+function initTheme() {
+  const saved = localStorage.getItem(THEME_KEY);
+  const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = saved ? saved === 'dark' : prefersDark;
+  setTheme(isDark);
+}
+function setTheme(isDark) {
+  document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light');
+  localStorage.setItem(THEME_KEY, isDark ? 'dark' : 'light');
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+  const icon = btn?.querySelector('i');
+  if (btn && label && icon) {
+    label.textContent = isDark ? 'Escuro' : 'Claro';
+    icon.className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+  }
+}
+document.getElementById('themeToggle')?.addEventListener('click', () => {
+  const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+  setTheme(!isDark);
+});
+
+// Init
+document.getElementById('baseInss').dataset.manual = 'false';
+initTheme();
+atualizarRegraInss();
+
+// Initial render with empty state
+const resultadoInicial = calcularTributosPuros(State);
+renderizarTabela(resultadoInicial);
+renderizarCards(resultadoInicial);
+renderizarResumo(resultadoInicial);
+atualizarEstadoRegime();
+atualizarContadorCheck();
+</script>
+</body>
+</html>
